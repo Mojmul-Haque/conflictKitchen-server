@@ -10,7 +10,12 @@ const client = new MongoClient(uri, {
 
 client.connect((err) => {
   const foodCollection = client.db(`${process.env.DB_NAME}`).collection("food");
-  const cartCollection = client.db(`${process.env.DB_NAME}`).collection("cart");
+
+  const orderCollection = client.db(`${process.env.DB_NAME}`).collection("order");
+
+  const reviewCollection = client.db(`${process.env.DB_NAME}`).collection("reviews");
+
+  
 
   // add  foood from admin panel with form post  data
   router.post("/addFood", (req, res) => {
@@ -26,35 +31,29 @@ client.connect((err) => {
     });
   });
 
-  // search food by name/word
-  //localhost:4000/allFoods/search?name=${searchValue}
-  // router.get("/showFoods", (req, res) => {
-  //   console.log(req.query);
-  //   const searchValue = req.query.search;
-  //   foodCollection.find({ mealName: searchValue }).toArray((err, document) => {
-  //     res.send(document);
-  //   });
-  // });
+  // Checkout data
+  router.post("/addOrder", (req, res) => {
+    orderCollection.insertOne(req.body).then((result) => {
+      console.log(result.insertedCount > 0);
+      res.send(result.insertedCount > 0);
+    });
+  });
 
-  // router.post("/addCart", (req, res) => {
-  //   console.log(req.body);
-  //   cartCollection.insertOne(req.body).then((result) => {
-  //     // console.log(result);
-  //     res.send(result.insertedCount > 0);
-  //   });
-  // });
+  // get all order and show to admin dashboard
 
-  // router.get("/showCart", (req, res) => {
-    
-  //   cartCollection.find({}).toArray((err, documents) => {
-  //     res.send(documents);
-  //   });
-  // });
+  router.get("/allOrder", (req, res) => {
+    orderCollection.find({}).toArray((err, documents) => {
+      res.send(documents);
+    });
+  });
+});
 
-
-
-
-
+// addReview from users
+router.post("/addReview", (req, res) => {
+  reviewCollection.insertOne(req.body).then((result) => {
+    console.log(result);
+    res.send(result.insertedCount > 0);
+  });
 });
 
 module.exports = router;

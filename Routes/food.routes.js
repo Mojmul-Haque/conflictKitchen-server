@@ -9,51 +9,59 @@ const client = new MongoClient(uri, {
 });
 
 client.connect((err) => {
-  const foodCollection = client.db(`${process.env.DB_NAME}`).collection("food");
+  if (err) {
+    console.log(err);
+  } else {
+    const foodCollection = client
+      .db(`${process.env.DB_NAME}`)
+      .collection("food");
 
-  const orderCollection = client.db(`${process.env.DB_NAME}`).collection("order");
+    const orderCollection = client
+      .db(`${process.env.DB_NAME}`)
+      .collection("order");
 
-  const reviewCollection = client.db(`${process.env.DB_NAME}`).collection("reviews");
+    const reviewCollection = client
+      .db(`${process.env.DB_NAME}`)
+      .collection("reviews");
 
-  
-
-  // add  foood from admin panel with form post  data
-  router.post("/addFood", (req, res) => {
-    foodCollection.insertOne(req.body).then((result) => {
-      res.send(result.insertedCount > 0);
+    // add  foood from admin panel with form post  data
+    router.post("/addFood", (req, res) => {
+      foodCollection.insertOne(req.body).then((result) => {
+        res.send(result.insertedCount > 0);
+      });
     });
-  });
 
-  // show  all foods on ui with
-  router.get("/allFoods", (req, res) => {
-    foodCollection.find({}).toArray((err, documents) => {
-      res.send(documents);
+    // show  all foods on ui with
+    router.get("/allFoods", (req, res) => {
+      foodCollection.find({}).toArray((err, documents) => {
+        res.send(documents);
+      });
     });
-  });
 
-  // Checkout data
-  router.post("/addOrder", (req, res) => {
-    orderCollection.insertOne(req.body).then((result) => {
-      console.log(result.insertedCount > 0);
-      res.send(result.insertedCount > 0);
+    // Checkout data
+    router.post("/addOrder", (req, res) => {
+      orderCollection.insertOne(req.body).then((result) => {
+        console.log(result.insertedCount > 0);
+        res.send(result.insertedCount > 0);
+      });
     });
-  });
 
-  // get all order and show to admin dashboard
+    // get all order and show to admin dashboard
 
-  router.get("/allOrder", (req, res) => {
-    orderCollection.find({}).toArray((err, documents) => {
-      res.send(documents);
+    router.get("/allOrder", (req, res) => {
+      orderCollection.find({}).toArray((err, documents) => {
+        res.send(documents);
+      });
     });
-  });
-});
 
-// addReview from users
-router.post("/addReview", (req, res) => {
-  reviewCollection.insertOne(req.body).then((result) => {
-    console.log(result);
-    res.send(result.insertedCount > 0);
-  });
+    // addReview from users
+    router.post("/addReview", (req, res) => {
+      reviewCollection.insertOne(req.body).then((result) => {
+        console.log(result);
+        res.send(result.insertedCount > 0);
+      });
+    });
+  }
 });
 
 module.exports = router;
